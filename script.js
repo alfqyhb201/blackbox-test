@@ -201,3 +201,52 @@ document.addEventListener('keydown', (e) => {
 
 // Initial display
 calculator.updateDisplay();
+
+// Theme toggle functionality
+const themeToggle = document.getElementById('themeToggle');
+
+// Function to set theme
+function setTheme(theme) {
+    if (theme === 'dark') {
+        document.body.classList.add('dark-theme');
+    } else {
+        document.body.classList.remove('dark-theme');
+    }
+    localStorage.setItem('theme', theme);
+}
+
+// Function to toggle theme
+function toggleTheme() {
+    const currentTheme = document.body.classList.contains('dark-theme') ? 'dark' : 'light';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+}
+
+// Load saved theme preference on page load
+function loadTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        setTheme(savedTheme);
+    } else {
+        // Check system preference
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            setTheme('dark');
+        }
+    }
+}
+
+// Event listener for theme toggle button
+themeToggle.addEventListener('click', toggleTheme);
+
+// Listen for system theme changes
+if (window.matchMedia) {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        // Only apply system preference if user hasn't manually set a theme
+        if (!localStorage.getItem('theme')) {
+            setTheme(e.matches ? 'dark' : 'light');
+        }
+    });
+}
+
+// Load theme on page load
+loadTheme();
